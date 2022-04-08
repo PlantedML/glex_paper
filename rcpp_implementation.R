@@ -77,5 +77,5 @@ myshap_rcpp <- function(xg, x) {
 
   # Return main effects, interactions and decomposition
   list(shap = shap,
-       m = m_all)
+       m = m_all[, -1])
 }
