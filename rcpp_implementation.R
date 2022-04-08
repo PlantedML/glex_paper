@@ -31,7 +31,7 @@ myshap_rcpp <- function(xg, x) {
 
   # All subsets S (that appear in any of the trees)
   all_S <- unique(do.call(c,lapply(0:max(trees$Tree), function(tree) {
-    subsets(trees[Tree == tree & Feature_num > 0, sort(unique(Feature_num))])
+    subsets(trees[Tree == tree & Feature_num > 0, sort(unique(as.integer(Feature_num)))])
   })))
   m_all <- matrix(0, nrow = nrow(x), ncol = length(all_S))
   colnames(m_all) <- sapply(all_S, function(s) {
@@ -77,6 +77,5 @@ myshap_rcpp <- function(xg, x) {
 
   # Return main effects, interactions and decomposition
   list(shap = shap,
-       interactions = interactions,
        m = m_all)
 }
