@@ -24,16 +24,10 @@ dat <- data.frame(y = y, x)
 xg <- xgboost(data = x, label = y, params = list(max_depth = 2, eta = .5), nrounds = 1)
 
 
-interactions <- myshap_rcpp(xg, x[1:10, ])
+res <- myshap_rcpp(xg, x[1:10, ])
 
-# SHAP values are the sum of the m's *1/d
-shap <- sapply(colnames(x), function(col) {
-  idx <- grep(col, colnames(interactions))
-  rowSums(interactions[, idx])
-})
-
-shap
-interactions
+res$shap
+res$interactions
 
 # treeshap for comparison
 uxg <- xgboost.unify(xg, x[1:10, , drop = FALSE])

@@ -65,8 +65,18 @@ myshap_rcpp <- function(xg, x) {
 
   d <- lengths(regmatches(colnames(m_all), gregexpr(":", colnames(m_all)))) + 1
 
-  # Return main effects and interactions
   # Overall feature effect is sum of all elements where feature is involved
   #m_all[, -1] / d[-1]
-  sweep(m_all[, -1], MARGIN = 2, d[-1], "/")
+  interactions <- sweep(m_all[, -1], MARGIN = 2, d[-1], "/")
+
+  # SHAP values are the sum of the m's *1/d
+  shap <- sapply(colnames(x), function(col) {
+    idx <- grep(col, colnames(interactions))
+    rowSums(interactions[, idx])
+  })
+
+  # Return main effects, interactions and decomposition
+  list(shap = shap,
+       interactions = interactions,
+       m = m_all)
 }
