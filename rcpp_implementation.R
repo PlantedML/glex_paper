@@ -57,7 +57,9 @@ myshap_rcpp <- function(xg, x) {
 
     for (tree in 0:max(trees$Tree)) {
       T <- tree_feats[[tree+1]]
-      contribute(mats[[tree+1]], m_all, S, T, tree_subsets[[tree+1]], colnum-1)
+      if (all(S %in% T)) {
+        contribute(mats[[tree+1]], m_all, S, T, tree_subsets[[tree+1]], colnum-1)
+      }
     }
   }
 
