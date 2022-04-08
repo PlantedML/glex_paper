@@ -4,7 +4,7 @@ library(Rcpp)
 
 sourceCpp("matrix_implementation.cpp")
 
-myshap_rcpp <- function(xg, x) {
+myshap_rcpp_old2 <- function(xg, x) {
   trees <- xgboost::xgb.model.dt.tree(model = xg, use_int_id = TRUE)
 
   # Function to get all subsets of set
@@ -29,38 +29,35 @@ myshap_rcpp <- function(xg, x) {
     mat
   })
 
-  # All subsets S (that appear in any of the trees)
-  all_S <- unique(do.call(c,lapply(0:max(trees$Tree), function(tree) {
-    subsets(trees[Tree == tree & Feature_num > 0, sort(unique(Feature_num))])
-  })))
-  m_all <- matrix(0, nrow = nrow(x), ncol = length(all_S))
-  colnames(m_all) <- sapply(all_S, function(s) {
-    paste(colnames(x)[s], collapse = ":")
-  })
-
-  # Prepare features and subsets per tree
-  tree_feats <- lapply(0:max(trees$Tree), function(tree) {
-    trees[Tree == tree & Feature != "Leaf", sort(unique(Feature_num))]
-  })
-  tree_subsets <- lapply(tree_feats, function(T) {
-    subsets(T)
-  })
-
-  # TODO: Faster if we also do this loop in C++?
-  for (S in all_S) {
-    colname <- paste(colnames(x)[S], collapse = ":")
-    if (nchar(colname) == 0) {
-      colnum <- 1
-    } else {
-      colnum <- which(colnames(m_all) == colname)
-    }
-
-    for (tree in 0:max(trees$Tree)) {
-      T <- tree_feats[[tree+1]]
-      contribute(mats[[tree+1]], m_all, S, T, tree_subsets[[tree+1]], colnum-1)
-    }
+  # TODO: sort(unique(Feature)) only works if features in alphabetical order?
+  # Function to calculate m_S (model without feature subset S)
+  m_S <- function(S) {
+    rowSums(sapply(0:max(trees$Tree), function(tree) {
+      if (trees[Tree == tree, all(S %in% Feature)]) {
+        # For all subsets U in tree
+        T <- trees[Tree == tree & Feature != "Leaf", sort(unique(Feature))]
+        rowSums(sapply(subsets(T), function(U) {
+          if ((length(setdiff(T, S)) == 0) || all(setdiff(T, S) %in% U)) {
+            colname <- paste(U, collapse = ":")
+            if (nchar(colname) == 0) {
+              colname <- 1
+            }
+            message("T ", T, ", S ", S, ", U ", U, ", sign: ", (-1)^(length(S) - length(setdiff(T, U))))
+            (-1)^(length(S) - length(setdiff(T, U))) * mats[[tree+1]][, colname]
+          } else {
+            rep(0, nrow(x))
+          }
+        }))
+      } else {
+        rep(0, nrow(x))
+      }
+    }))
   }
 
+  # Calculate m_S for all subsets S
+  all_S <- subsets(colnames(x))
+  m_all <- sapply(all_S, m_S)
+  colnames(m_all) <- sapply(all_S, paste, collapse = ":")
   d <- lengths(regmatches(colnames(m_all), gregexpr(":", colnames(m_all)))) + 1
 
   # Return main effects and interactions

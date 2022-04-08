@@ -107,4 +107,4 @@ m_all[-1] / d[-1]
 treeshap(uxg, x[1, , drop = FALSE], interactions = TRUE)
 
 # TODO: Question: Our advantage? Higher-order interactions, faster? Or same speed?
-# TODO: Fast implementation
+# TODO: Fast implementation: Buffer results of recurse(...)? Vectorize observations? Just compute once per leaf and re-use!
