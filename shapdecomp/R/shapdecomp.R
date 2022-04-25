@@ -1,10 +1,16 @@
 
-library(data.table)
-library(Rcpp)
-
-sourceCpp("matrix_implementation.cpp")
-
-myshap_rcpp <- function(xg, x) {
+#' SHAP decomposition
+#'
+#' @param xg xgboost model
+#' @param x data
+#'
+#' @return decomposition
+#' @useDynLib shapdecomp, .registration = TRUE
+#' @import data.table
+#' @export
+#'
+#' @examples
+shapdecomp <- function(xg, x) {
   trees <- xgboost::xgb.model.dt.tree(model = xg, use_int_id = TRUE)
 
   # Function to get all subsets of set

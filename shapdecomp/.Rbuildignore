@@ -1,0 +1,5 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^shapdecomp\.Rcheck$
+^shapdecomp.*\.tar\.gz$
+^shapdecomp.*\.tgz$
