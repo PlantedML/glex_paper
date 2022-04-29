@@ -6,6 +6,7 @@
 #'
 #' @return decomposition
 #' @useDynLib shapdecomp, .registration = TRUE
+#' @import Rcpp
 #' @import data.table
 #' @export
 #'
