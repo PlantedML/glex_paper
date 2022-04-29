@@ -6,6 +6,7 @@ library(treeshap)
 library(data.table)
 library(ggplot2)
 library(gridExtra)
+library(cowplot)
 library(shapdecomp)
 
 set.seed(2022)
@@ -49,7 +50,7 @@ cov_base <- 0
 sigma <- toeplitz(cov_base^(0:(p-1)))
 x <- matrix(rmvnorm(n = n, sigma = sigma), ncol = p,
             dimnames = list(NULL, paste0('x', seq_len(p))))
-lp <- x %*% beta + beta0 + 1 * x[, 2] * x[, 3] #+ x[, 2] * x[, 3] * x[, 4]
+lp <- x %*% beta + beta0 + 1 * x[, 2] * x[, 3] - 2 * x[, 2] * x[, 3] * x[, 4]
 y <- lp + rnorm(n)
 dat <- data.frame(y = y, x)
 
@@ -117,8 +118,12 @@ vim_sep <- sapply(1:4, vim, res = res, vars = colnames(x))
 df <- data.table(melt(vim_sep))
 colnames(df) <- c("Variable", "Order", "VIM")
 df[, Order := factor(Order, levels = 1:4,
-                     labels = c("Main effect", paste0(2:4, "-way interaction")))]p_bike_sep <- ggplot(df, aes(x = Variable, y = VIM, fill = Order)) +
+                     labels = c("Main effect", paste0(2:4, "-way interaction")))]
+p_bike_sep <- ggplot(df, aes(x = Variable, y = VIM, fill = Order)) +
   geom_bar(stat = "identity", position = position_dodge()) +
   scale_fill_viridis_d()+
   theme_bw()
 
+# Plot all together -------------------------------------------------------
+plot_grid(p_sim_shap, p_sim_sep, p_bike_shap, p_bike_sep, ncol = 2, rel_widths = c(.4, .6))
+ggsave("variable_importance.pdf", width = 11, height = 5)
