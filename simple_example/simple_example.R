@@ -35,12 +35,16 @@ df <- data.frame(x1 = x[, 1],
 df <- df[df$x1 <= 2 & df$x1 >= -2 & df$x2 <= 2 & df$x2 >= -2, ]
 p_s1 <- ggplot(df, aes(x = x1, y = shap1)) +
   geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  theme_bw()
+  #geom_abline(intercept = 0, slope = 1, col = "red") +
+  theme_bw() +
+  xlab(expression(italic(X[1]))) +
+  ylab(expression(SHAP~value~italic(phi[~1])))
 p_s2 <- ggplot(df, aes(x = x2, y = shap2)) +
   geom_point() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  theme_bw()
+  #geom_abline(intercept = 0, slope = 1, col = "red") +
+  theme_bw() +
+  xlab(expression(italic(X[2]))) +
+  ylab(expression(SHAP~value~italic(phi[~2])))
 #grid.arrange(p_s1, p_s2, ncol=2)
 
 # Plot m's
@@ -54,21 +58,27 @@ df <- df[df$x1 <= 2 & df$x1 >= -2 & df$x2 <= 2 & df$x2 >= -2, ]
 p_m1 <- ggplot(df, aes(x = x1, y = m1)) +
 #  geom_point() +
   geom_line() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  theme_bw()
+  #geom_abline(intercept = -.6, slope = 1, col = "red") +
+  theme_bw() +
+  xlab(expression(italic(X[1]))) +
+  ylab(expression(Decomposition~italic(m[1])))
 p_m2 <- ggplot(df, aes(x = x2, y = m2)) +
 #  geom_point() +
   geom_line() +
-  geom_abline(intercept = 0, slope = 1, col = "red") +
-  theme_bw()
+  #geom_abline(intercept = -.6, slope = 1, col = "red") +
+  theme_bw() +
+  xlab(expression(italic(X[2]))) +
+  ylab(expression(Decomposition~italic(m[2])))
 p_m3 <- ggplot(df, aes(x = x1, y = x2, col = m12)) +
   geom_point() +
-  scale_color_viridis_b() +
-  theme_bw()
+  scale_color_viridis_b(name = expression(italic(m[12]))) +
+  theme_bw() +
+  xlab(expression(italic(X[1]))) +
+  ylab(expression(italic(X[2])))
 #grid.arrange(p_m1, p_m2, p_m3, ncol=3)
 
 # Plot everythin together
 blank <- grid::grid.rect(gp = grid::gpar(col = "white"))
 p <- arrangeGrob(p_s1, p_s2, blank, p_m1, p_m2, p_m3, ncol=3, widths = c(.3, .3, .4))
 ggsave("simple_example.pdf", plot = p, width = 10, height = 6)
-
+ggsave("simple_example.png", plot = p, width = 10, height = 6)
