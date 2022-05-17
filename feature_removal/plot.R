@@ -18,7 +18,7 @@ ggplot(df, aes(x = Sex, y = Prediction, fill = Model)) +
   scale_fill_manual(values = viridis_pal()(4)[1:3]) +
   theme_bw()
 
-ggsave("feature_removal.pdf", width = 10, height = 4)
+ggsave("feature_removal.pdf", width = 9, height = 3.5)
 
 # Median differences
 medians <- df[, median(Prediction), by = .(Setting, Sex, Model)]

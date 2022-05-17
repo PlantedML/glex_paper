@@ -12,6 +12,10 @@ data_compas <- function(data, job) {
   dt[, protected  := 1*(sex  == "Female")]
   dt[, sex := NULL]
 
+  # Protected attribute (race)
+  # dt[, protected2  := race]
+  # dt[, race := NULL]
+
   # Outcome
   y <- 1*(dt$two_year_recid  == "Yes")
   dt[, two_year_recid := NULL]
@@ -20,7 +24,7 @@ data_compas <- function(data, job) {
   x <- as.matrix(dt)
 
   # Temp
-  x <- x[, c(1:4, 15)]
+  x <- x[, c(1:4, 14, 15)]
 
   list(x = x,
        y = y)
@@ -58,6 +62,10 @@ data_adult <- function(data, job) {
   dt[, protected := sex - 1]
   dt[, sex := NULL]
 
+  # Protected attribute (race)
+  # dt[, protected2  := race]
+  # dt[, race := NULL]
+
   # Outcome
   y <- dt$income - 1
   dt[, income := NULL]
@@ -66,7 +74,7 @@ data_adult <- function(data, job) {
   x <- as.matrix(dt)
 
   # Temp
-  x <- x[, c(1:4, 13)]
+  x <- x[, c(1:4, 12, 13)]
 
   list(x = x,
        y = y)

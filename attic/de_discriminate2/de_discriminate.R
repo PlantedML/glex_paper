@@ -1,11 +1,10 @@
 library(batchtools)
 library(ggplot2)
-library(data.table)
 
 set.seed(42)
 
 # Registry ----------------------------------------------------------------
-reg_name <- "de_discriminate"
+reg_name <- "de_discriminate2"
 reg_dir <- file.path("registries", reg_name)
 unlink(reg_dir, recursive = TRUE)
 makeExperimentRegistry(file.dir = reg_dir)
@@ -25,7 +24,7 @@ prob_design <- NULL
 algo_design <- list(shap_decomp = expand.grid(max_depth = 5,
                                               eta = .5,
                                               nrounds = 10))
-addExperiments(prob_design, algo_design, repls = 50)
+addExperiments(prob_design, algo_design, repls = 30)
 summarizeExperiments()
 
 # Test jobs -----------------------------------------------------------
@@ -40,16 +39,14 @@ res <-  flatten(ijoin(reduceResultsDataTable(), getJobPars()))
 saveRDS(res, "de_discriminate.Rds")
 
 # Plot results -------------------------------------------------------------
-res <- readRDS("de_discriminate.Rds")
 df <- melt(res, measure.vars = c("full", "refit", "reduced"),
-           variable.name = "Method", value.name = "Statistic")
+           variable.name = "Method", value.name = "MSE")
 df[, Problem := factor(problem, levels = c("adult", "compas", "credit"),
                        labels = c("Adult", "COMPAS", "German credit"))]
-df <- df[Method != "refit", ]
-ggplot(df, aes(x = Method, y = Statistic)) +
-  facet_wrap(~ Problem) +
+ggplot(df, aes(x = Method, y = MSE)) +
+  facet_wrap(~ Problem, scales = "free") +
   geom_boxplot(fill = "lightgrey") +
-  geom_hline(yintercept = 0, col = "red") +
+  #geom_hline(yintercept = 0, col = "red") +
   theme_bw() +
   ylab("Test statistic of conditional independence test")
 ggsave("de_discriminate.pdf", width = 10, height = 5)
