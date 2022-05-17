@@ -85,15 +85,7 @@ p4 <- ggplot(data.frame(hr = x[, "hr"], temp = x[, "temp"],
   scale_color_viridis_c(name = expression(italic(m[jkl]))) +
   ylab(expression(atop(3-way~interactions~italic(m[jkl]), "temp")))
 
-title1 <- ggdraw() +
-  draw_label("SHAP values",
-    #fontface = 'bold',
-    x = 0,
-    hjust = 0
-  ) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-
 plot_grid(p1, p2, p3, p4, ncol = 1)
-ggsave("bike_example.pdf", width = 8, height = 12)
-ggsave("bike_example.png", width = 8, height = 12)
+ggsave("bike_example.pdf", width = 10, height = 13)
+ggsave("bike_example.png", width = 10, height = 13)
 

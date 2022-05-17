@@ -69,8 +69,9 @@ colnames(df) <- c("VIM")
 df[, Variable := colnames(x)]
 p_sim_shap <- ggplot(df, aes(x = Variable, y = VIM)) +
   geom_bar(stat = "identity", position = position_dodge()) +
-  scale_fill_viridis_d()+
-  theme_bw()
+  scale_fill_viridis_d(alpha = .9) +
+  theme_bw() +
+  ylab("Variable importance")
 
 # Variable importance for all orders separately
 vim_sep <- sapply(1:4, vim, res = res, vars = colnames(x))
@@ -82,8 +83,9 @@ df[, Order := factor(Order, levels = 1:4,
                      labels = c("Main effect", paste0(2:4, "-way interaction")))]
 p_sim_sep <- ggplot(df, aes(x = Variable, y = VIM, fill = Order)) +
   geom_bar(stat = "identity", position = position_dodge()) +
-  scale_fill_viridis_d()+
-  theme_bw()
+  scale_fill_viridis_d(alpha = .9) +
+  theme_bw() +
+  ylab("Variable importance")
 
 # Bike data ---------------------------------------------------------------
 # Prepare data
@@ -106,10 +108,12 @@ vim_shap <- colMeans(abs(res$shap))
 df <- data.table(melt(vim_shap))
 colnames(df) <- c("VIM")
 df[, Variable := colnames(x)]
+df <- df[Variable != "windspeed"]
 p_bike_shap <- ggplot(df, aes(x = Variable, y = VIM)) +
   geom_bar(stat = "identity", position = position_dodge()) +
-  scale_fill_viridis_d()+
-  theme_bw()
+  scale_fill_viridis_d(alpha = .9)+
+  theme_bw() +
+  ylab("Variable importance")
 
 # Variable importance for all orders separately
 vim_sep <- sapply(1:4, vim, res = res, vars = colnames(x))
@@ -119,11 +123,13 @@ df <- data.table(melt(vim_sep))
 colnames(df) <- c("Variable", "Order", "VIM")
 df[, Order := factor(Order, levels = 1:4,
                      labels = c("Main effect", paste0(2:4, "-way interaction")))]
+df <- df[Variable != "windspeed"]
 p_bike_sep <- ggplot(df, aes(x = Variable, y = VIM, fill = Order)) +
   geom_bar(stat = "identity", position = position_dodge()) +
-  scale_fill_viridis_d()+
-  theme_bw()
+  scale_fill_viridis_d(alpha = .9) +
+  theme_bw() +
+  ylab("Variable importance")
 
 # Plot all together -------------------------------------------------------
 plot_grid(p_sim_shap, p_sim_sep, p_bike_shap, p_bike_sep, ncol = 2, rel_widths = c(.4, .6))
-ggsave("variable_importance.pdf", width = 11, height = 5)
+ggsave("variable_importance.pdf", width = 9, height = 4)
