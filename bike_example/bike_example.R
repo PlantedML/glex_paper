@@ -86,6 +86,6 @@ p4 <- ggplot(data.frame(hr = x[, "hr"], temp = x[, "temp"],
   ylab(expression(atop(3-way~interactions~italic(m[jkl]), "temp")))
 
 plot_grid(p1, p2, p3, p4, ncol = 1)
-ggsave("bike_example.pdf", width = 10, height = 13)
-ggsave("bike_example.png", width = 10, height = 13)
+ggsave("bike_example.pdf", width = 10, height = 10.5)
+ggsave("bike_example.png", width = 10, height = 10.5)
 
