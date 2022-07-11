@@ -13,6 +13,7 @@
 #'   \item{shap}{SHAP values.}
 #'   \item{m}{Functional decomposition, i.e., all main and interaction
 #'   components in the model.}
+#'   \item{intercept}{Intercept, i.e., expected value of the prediction.}
 #' @useDynLib shapdecomp, .registration = TRUE
 #' @import Rcpp
 #' @import data.table
@@ -25,7 +26,12 @@
 #' xg <- xgboost(data = x[1:26, ], label = y[1:26], params = list(max_depth = 4, eta = .1), nrounds = 20)
 #' res <- shapdecomp(xg, x[27:32, ])
 shapdecomp <- function(xg, x) {
+  # Convert model
   trees <- xgboost::xgb.model.dt.tree(model = xg, use_int_id = TRUE)
+
+  # Expected value (intercept)
+  pred <- predict(xg, x)
+  expected_value <- mean(pred)
 
   # Function to get all subsets of set
   subsets <- function(x) {
@@ -95,7 +101,8 @@ shapdecomp <- function(xg, x) {
     rowSums(interactions[, idx])
   })
 
-  # Return main effects, interactions and decomposition
+  # Return shap values, decomposition and intercept
   list(shap = shap,
-       m = m_all[, -1])
+       m = m_all[, -1],
+       intercept = expected_value)
 }

@@ -17,6 +17,7 @@ with elements:
   \item{shap}{SHAP values.}
   \item{m}{Functional decomposition, i.e., all main and interaction
   components in the model.}
+  \item{intercept}{Intercept, i.e., expected value of the prediction.}
 }
 \description{
 A global explanation of a regression or classification function by
