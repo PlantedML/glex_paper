@@ -72,12 +72,6 @@ shapdecomp <- function(xg, x, max_interaction = Inf) {
   d <- sapply(all_S, length)
   all_S <- all_S[d <= max_interaction]
   
-  # Init m matrix
-  m_all <- matrix(0, nrow = nrow(x), ncol = length(all_S))
-  colnames(m_all) <- sapply(all_S, function(s) {
-    paste(colnames(x)[s], collapse = ":")
-  })
-  
   # For each tree, calculate matrix and contribution
   tree_fun <- function(tree) {
     # Calculate matrix
@@ -91,6 +85,12 @@ shapdecomp <- function(xg, x, max_interaction = Inf) {
       paste(colnames(x)[u], collapse = ":")
     })
     
+    # Init m matrix
+    m_all <- matrix(0, nrow = nrow(x), ncol = length(all_S))
+    colnames(m_all) <- sapply(all_S, function(s) {
+      paste(colnames(x)[s], collapse = ":")
+    })
+    
     # Calculate contribution, use only subsets with not more than max_interaction involved features
     d <- sapply(U, length)
     for (S in U[d <= max_interaction]) {
@@ -102,15 +102,18 @@ shapdecomp <- function(xg, x, max_interaction = Inf) {
       }
       contribute(mat, m_all, S, T, U, colnum-1)
     }
+    
+    # Return m matrix
+    m_all
   }
   
   # Run in parallel if a parallel backend is registered
   j <- NULL
   idx <- 0:max(trees$Tree)
   if (foreach::getDoParRegistered()) {
-    foreach(j = idx) %dopar% tree_fun(j)
+    m_all <- foreach(j = idx, .combine = "+") %dopar% tree_fun(j)
   } else {
-    foreach(j = idx) %do% tree_fun(j)
+    m_all <- foreach(j = idx, .combine = "+") %do% tree_fun(j)
   }
   
   d <- lengths(regmatches(colnames(m_all), gregexpr(":", colnames(m_all)))) + 1
