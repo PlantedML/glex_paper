@@ -1,15 +1,30 @@
 Package: shapdecomp
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: SHAP Value Decomposition
+Version: 0.1.1
+Date: 2022-07-11
+Authors@R: 
+    c(person(given = "Marvin N.",
+             family = "Wright",
+             role = c("aut", "cre"),
+             email = "cran@wrig.de",
+             comment = c(ORCID = "0000-0002-8542-6291")),
+      person(given = "Joseph T.",
+             family = "Meyer",
+             role = "aut"),
+       person(given = "Munir",
+             family = "Hiabu",
+             role = "aut"))
+Maintainer: Marvin N. Wright <cran@wrig.de>
+Description: A global explanation of a regression or classification function by 
+  decomposing it into the sum of main components and interaction components of 
+  arbitrary order, implemented for xgboost models.
+License: GPL-3
 Encoding: UTF-8
+URL: https://github.com/PlantedML/shap_decomposition
+BugReports: https://github.com/PlantedML/shap_decomposition/issues
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Imports: Rcpp (>= 1.0.8), 
          data.table
 LinkingTo: Rcpp
