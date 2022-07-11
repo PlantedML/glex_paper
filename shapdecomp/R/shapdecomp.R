@@ -7,6 +7,7 @@
 #'
 #' @param xg xgboost model to be explained.
 #' @param x Data to be explained.
+#' @param max_interaction Maximum interaction size to consider.
 #'
 #' @return Decomposition of the regression or classification function. Object
 #' with elements:
@@ -31,7 +32,7 @@
 #'               params = list(max_depth = 4, eta = .1),
 #'               nrounds = 10)
 #' res <- shapdecomp(xg, x[27:32, ])
-shapdecomp <- function(xg, x) {
+shapdecomp <- function(xg, x, max_interaction = Inf) {
   # To avoid data.table check issues
   Tree <- NULL
   Feature <- NULL
@@ -70,6 +71,12 @@ shapdecomp <- function(xg, x) {
   all_S <- unique(do.call(c,lapply(0:max(trees$Tree), function(tree) {
     subsets(trees[Tree == tree & Feature_num > 0, sort(unique(as.integer(Feature_num)))])
   })))
+
+  # Keep only those with not more than max_interaction involved features
+  d <- sapply(all_S, length)
+  all_S <- all_S[d <= max_interaction]
+
+  # Init m matrix
   m_all <- matrix(0, nrow = nrow(x), ncol = length(all_S))
   colnames(m_all) <- sapply(all_S, function(s) {
     paste(colnames(x)[s], collapse = ":")

@@ -4,12 +4,14 @@
 \alias{shapdecomp}
 \title{SHAP decomposition.}
 \usage{
-shapdecomp(xg, x)
+shapdecomp(xg, x, max_interaction = Inf)
 }
 \arguments{
 \item{xg}{xgboost model to be explained.}
 
 \item{x}{Data to be explained.}
+
+\item{max_interaction}{Maximum interaction size to consider.}
 }
 \value{
 Decomposition of the regression or classification function. Object
