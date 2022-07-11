@@ -2,18 +2,31 @@
 % Please edit documentation in R/shapdecomp.R
 \name{shapdecomp}
 \alias{shapdecomp}
-\title{SHAP decomposition}
+\title{SHAP decomposition.}
 \usage{
 shapdecomp(xg, x)
 }
 \arguments{
-\item{xg}{xgboost model}
+\item{xg}{xgboost model to be explained.}
 
-\item{x}{data}
+\item{x}{Data to be explained.}
 }
 \value{
-decomposition
+Decomposition of the regression or classification function. Object
+with elements:
+  \item{shap}{SHAP values.}
+  \item{m}{Functional decomposition, i.e., all main and interaction
+  components in the model.}
 }
 \description{
-SHAP decomposition
+A global explanation of a regression or classification function by
+decomposing it into the sum of main components and interaction components of
+arbitrary order, based on SHAP values and implemented for xgboost models.
+}
+\examples{
+# mtcars example
+x <- as.matrix(mtcars[, -1])
+y <- mtcars$mpg
+xg <- xgboost(data = x[1:26, ], label = y[1:26], params = list(max_depth = 4, eta = .1), nrounds = 20)
+res <- shapdecomp(xg, x[27:32, ])
 }

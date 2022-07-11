@@ -18,7 +18,7 @@ Authors@R:
 Maintainer: Marvin N. Wright <cran@wrig.de>
 Description: A global explanation of a regression or classification function by 
   decomposing it into the sum of main components and interaction components of 
-  arbitrary order, implemented for xgboost models.
+  arbitrary order, based on SHAP values and implemented for xgboost models.
 License: GPL-3
 Encoding: UTF-8
 URL: https://github.com/PlantedML/shap_decomposition

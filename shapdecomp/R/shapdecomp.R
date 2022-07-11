@@ -1,16 +1,29 @@
 
-#' SHAP decomposition
+#' SHAP decomposition.
 #'
-#' @param xg xgboost model
-#' @param x data
+#' A global explanation of a regression or classification function by
+#' decomposing it into the sum of main components and interaction components of
+#' arbitrary order, based on SHAP values and implemented for xgboost models.
 #'
-#' @return decomposition
+#' @param xg xgboost model to be explained.
+#' @param x Data to be explained.
+#'
+#' @return Decomposition of the regression or classification function. Object
+#' with elements:
+#'   \item{shap}{SHAP values.}
+#'   \item{m}{Functional decomposition, i.e., all main and interaction
+#'   components in the model.}
 #' @useDynLib shapdecomp, .registration = TRUE
 #' @import Rcpp
 #' @import data.table
 #' @export
 #'
 #' @examples
+#' # mtcars example
+#' x <- as.matrix(mtcars[, -1])
+#' y <- mtcars$mpg
+#' xg <- xgboost(data = x[1:26, ], label = y[1:26], params = list(max_depth = 4, eta = .1), nrounds = 20)
+#' res <- shapdecomp(xg, x[27:32, ])
 shapdecomp <- function(xg, x) {
   trees <- xgboost::xgb.model.dt.tree(model = xg, use_int_id = TRUE)
 
