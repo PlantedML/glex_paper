@@ -40,13 +40,13 @@ shapdecomp <- function(xg, x) {
   # Convert model
   trees <- xgboost::xgb.model.dt.tree(model = xg, use_int_id = TRUE)
 
-  # Expected value (intercept)
-  pred <- predict(xg, x)
-  expected_value <- mean(pred)
-
   # Function to get all subsets of set
   subsets <- function(x) {
-    do.call(c, lapply(0:length(x), combn, x = x, simplify = FALSE))
+    if (length(x) == 1) {
+      list(integer(0), x)
+    } else {
+      do.call(c, lapply(0:length(x), combn, x = x, simplify = FALSE))
+    }
   }
 
   # Convert features to numerics (leaf = 0)
@@ -103,23 +103,20 @@ shapdecomp <- function(xg, x) {
   d <- lengths(regmatches(colnames(m_all), gregexpr(":", colnames(m_all)))) + 1
 
   # Overall feature effect is sum of all elements where feature is involved
-  #m_all[, -1] / d[-1]
-  interactions <- sweep(m_all[, -1], MARGIN = 2, d[-1], "/")
+  interactions <- sweep(m_all[, -1, drop = FALSE], MARGIN = 2, d[-1], "/")
 
   # SHAP values are the sum of the m's *1/d
   shap <- sapply(colnames(x), function(col) {
     idx <- grep(col, colnames(interactions))
     if (length(idx) == 0) {
       rep(0, nrow(interactions))
-    } else if (length(idx) == 1) {
-      interactions[, idx]
     } else {
-      rowSums(interactions[, idx])
+      rowSums(interactions[, idx, drop = FALSE])
     }
   })
 
   # Return shap values, decomposition and intercept
   list(shap = shap,
        m = m_all[, -1],
-       intercept = expected_value)
+       intercept = unique(m_all[, 1]) + 0.5)
 }
