@@ -98,7 +98,13 @@ shapdecomp <- function(xg, x) {
   # SHAP values are the sum of the m's *1/d
   shap <- sapply(colnames(x), function(col) {
     idx <- grep(col, colnames(interactions))
-    rowSums(interactions[, idx])
+    if (length(idx) == 0) {
+      rep(0, nrow(interactions))
+    } else if (length(idx) == 1) {
+      interactions[, idx]
+    } else {
+      rowSums(interactions[, idx])
+    }
   })
 
   # Return shap values, decomposition and intercept
