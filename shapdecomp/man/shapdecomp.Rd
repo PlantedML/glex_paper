@@ -26,6 +26,10 @@ A global explanation of a regression or classification function by
 decomposing it into the sum of main components and interaction components of
 arbitrary order, based on SHAP values and implemented for xgboost models.
 }
+\details{
+For parallel execution, register a backend, e.g. with
+\code{doParallel::registerDoParallel()}.
+}
 \examples{
 # mtcars example
 library(xgboost)
@@ -34,5 +38,11 @@ y <- mtcars$mpg
 xg <- xgboost(data = x[1:26, ], label = y[1:26],
               params = list(max_depth = 4, eta = .1),
               nrounds = 10)
-res <- shapdecomp(xg, x[27:32, ])
+shapdecomp(xg, x[27:32, ])
+
+\dontrun{
+# Parallel execution
+doParallel::registerDoParallel()
+shapdecomp(xg, x[27:32, ])
+}
 }
