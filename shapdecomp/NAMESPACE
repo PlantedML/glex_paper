@@ -3,4 +3,7 @@
 export(shapdecomp)
 import(Rcpp)
 import(data.table)
+importFrom(stats,predict)
+importFrom(utils,combn)
+importFrom(xgboost,xgb.model.dt.tree)
 useDynLib(shapdecomp, .registration = TRUE)

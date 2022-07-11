@@ -26,8 +26,11 @@ arbitrary order, based on SHAP values and implemented for xgboost models.
 }
 \examples{
 # mtcars example
+library(xgboost)
 x <- as.matrix(mtcars[, -1])
 y <- mtcars$mpg
-xg <- xgboost(data = x[1:26, ], label = y[1:26], params = list(max_depth = 4, eta = .1), nrounds = 20)
+xg <- xgboost(data = x[1:26, ], label = y[1:26],
+              params = list(max_depth = 4, eta = .1),
+              nrounds = 10)
 res <- shapdecomp(xg, x[27:32, ])
 }

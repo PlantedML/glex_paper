@@ -17,15 +17,26 @@
 #' @useDynLib shapdecomp, .registration = TRUE
 #' @import Rcpp
 #' @import data.table
+#' @importFrom stats predict
+#' @importFrom utils combn
+#' @importFrom xgboost xgb.model.dt.tree
 #' @export
 #'
 #' @examples
 #' # mtcars example
+#' library(xgboost)
 #' x <- as.matrix(mtcars[, -1])
 #' y <- mtcars$mpg
-#' xg <- xgboost(data = x[1:26, ], label = y[1:26], params = list(max_depth = 4, eta = .1), nrounds = 20)
+#' xg <- xgboost(data = x[1:26, ], label = y[1:26],
+#'               params = list(max_depth = 4, eta = .1),
+#'               nrounds = 10)
 #' res <- shapdecomp(xg, x[27:32, ])
 shapdecomp <- function(xg, x) {
+  # To avoid data.table check issues
+  Tree <- NULL
+  Feature <- NULL
+  Feature_num <- NULL
+
   # Convert model
   trees <- xgboost::xgb.model.dt.tree(model = xg, use_int_id = TRUE)
 
