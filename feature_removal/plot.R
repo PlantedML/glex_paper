@@ -16,9 +16,10 @@ ggplot(df, aes(x = Sex, y = Prediction, fill = Model)) +
   facet_wrap(~ Setting, scales = "free") +
   geom_boxplot(outlier.shape = NA, alpha = .9) +
   scale_fill_manual(values = viridis_pal()(4)[1:3]) +
-  theme_bw()
+  theme_bw() +
+  theme(legend.position = "bottom")
 
-ggsave("feature_removal.pdf", width = 9, height = 3.5)
+ggsave("feature_removal.pdf", width = 6, height = 4)
 
 # Median differences
 medians <- df[, median(Prediction), by = .(Setting, Sex, Model)]

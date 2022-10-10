@@ -131,5 +131,13 @@ p_bike_sep <- ggplot(df, aes(x = Variable, y = VIM, fill = Order)) +
   ylab("Variable importance")
 
 # Plot all together -------------------------------------------------------
-plot_grid(p_sim_shap, p_sim_sep, p_bike_shap, p_bike_sep, ncol = 2, rel_widths = c(.4, .6))
-ggsave("variable_importance.pdf", width = 9, height = 4)
+prow <- plot_grid(p_sim_shap + theme(legend.position = "none"),
+          p_sim_sep + theme(legend.position = "none", axis.title.y = element_blank()),
+          p_bike_shap + theme(legend.position = "none"),
+          p_bike_sep + theme(legend.position = "none", axis.title.y = element_blank()),
+          ncol = 2, rel_widths = c(.513, .487))
+legend <- get_legend(
+  p_sim_sep + theme(legend.position = "bottom", legend.title = element_blank())
+)
+plot_grid(prow, legend, ncol = 1, rel_heights = c(1, .1))
+ggsave("variable_importance.pdf", width = 6, height = 4)
