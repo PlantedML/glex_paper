@@ -80,3 +80,18 @@ legend <- get_legend(
 )
 cowplot::plot_grid(prow, legend, ncol = 1, rel_heights = c(1, .1))
 ggsave("runtime.pdf", width = 8, height = 8)
+
+# Plot in one row
+prow <- cowplot::plot_grid(p_n + theme(legend.position = "none"),
+                           p_p + theme(legend.position = "none"),
+                           p_rounds + theme(legend.position = "none"),
+                           p_depth + theme(legend.position = "none"),
+                           nrow = 1)
+
+legend <- get_legend(
+  p_n +
+    theme(legend.position = "bottom", legend.title = element_blank()) +
+    guides(color = guide_legend(nrow = 1, byrow = TRUE))
+)
+cowplot::plot_grid(prow, legend, ncol = 1, rel_heights = c(1, .1))
+ggsave("runtime_row.pdf", width = 10, height = 2.5)
